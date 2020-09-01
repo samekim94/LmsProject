@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mybatis 공통 환경설정 -->
+<!--mybatis-config.xml -->
+	<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+	
+	<configuration>
+	<!-- Null 허용 세팅 -->
+	<settings>
+	<setting value="NVARCHAR" name="jdbcTypeForNull"/>
+	</settings>
+	<typeAliases>
+		<!-- <typeAlias alias='member' type="com.dons.board.bean.MemberBean"/> -->
+		<package name='com.dons.board.bean'></package>
+	</typeAliases>
+	</configuration>

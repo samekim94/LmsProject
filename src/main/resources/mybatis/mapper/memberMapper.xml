@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--memberMapper.xml -->
+	<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<!-- <mapper namespace="memberMapper">
+		<select id='getLoginResult' parameterType="com.dons.board.bean.MemberBean" resultType="boolean">
+		SELECT COUNT(*) FROM member WHERE member_id=#{member_id} AND member_pw =#{member_pw}
+		</select>  인터페이스 말고 클래스로 데이터 받아왔을 때의 경우  
+		===================================================
+		1. parameterType에 1개의 타입만 올 수 있다. 
+		2. parameterType이 bean(dto)인 경우 #{필드명}
+		3. parameterType이 변수인 경우 #{변수명} 
+		4. parameterType이 map<key, value>인 경우 #{key}
+		5. resultType 1개이상의 레코드를 검색하는 경우 list에 담음 >> bean클래스에 담아서 나가면 됨
+		6. #{} 문자열인 경우 '' 자동으로 추가됨 
+		7. ${} 문자열 여부와 상관없이 문자 그대로 입력 ex)컬럼명 전달시 
+		-->
+	 	
+	 	<mapper namespace="com.dons.board.dao.IMemberDao">
+		<select id='getLoginResult' parameterType="member" resultType="boolean">
+		SELECT COUNT(*) FROM member WHERE member_id=#{member_id} AND member_pw =#{member_pw}
+		</select> 
+		
+		<insert id='joinFrmInsert' parameterType="member" >
+		INSERT INTO member VALUES (#{member_id},#{member_pw},#{member_name},default)
+		</insert>
+		
+		<select id='getSecurityPw' parameterType='String' resultType='String'>
+			SELECT member_pw FROM member WHERE member_id = #{member_id}
+		</select>
+		<select id='getMemberInfo' parameterType='String' resultType='member'>
+			SELECT * FROM memberInfo WHERE member_id = #{member_id}
+		</select>
+		
+	</mapper>

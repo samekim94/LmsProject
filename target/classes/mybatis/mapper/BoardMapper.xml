@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--BoardMapper.xml -->
+	<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+	<mapper namespace="com.dons.board.dao.IBoardDao">
+	<select id='getBoardList' parameterType='int' resultType='board'>
+		<!-- <![CDATA[
+		SELECT * FROM boardListRownum WHERE ronum BETWEEN #{pageNum}*10-9 AND #{pageNum}*10
+		]]> -->
+		<!-- 위에 문은 속도가 느림 더 빠른 방법으로 -->
+		<!-- /*+INDEX_DESC(board board_num_pk)*/ : 인덱스를 타고 내림차순으로 검색 -->
+		<![CDATA[
+		SELECT * FROM (
+		SELECT /*+INDEX_DESC(board board_num_pk)*/ROWNUM RN, board.* 
+		FROM board 
+		WHERE ROWNUM <=#{pageNum}*10)
+		WHERE RN >= #{pageNum}*10-9	]]>
+	</select>
+	<!-- <select id='getContents' parameterType='int' resultType='board'>
+		SELECT * FROM boardListRownum WHERE board_num=#{bNum}
+	</select>             이거는 첨부파일 하기전임.. -->
+	<resultMap type="boardFile" id="plusFile">
+	<id column='boardfile_num' property='boardfile_num'/>
+	<result column='boardfile_boardNum' property='boardfile_boardNum'/>
+	<result column='boardfile_origname' property='boardfile_origname'/>
+	<result column='boardfile_sysname' property='boardfile_sysname'/>
+	</resultMap>
+	<resultMap type="board" id="getContentsPlusFile">
+	<id column='board_num' property='board_num'/>
+	<result column='board_subject' property='board_subject'/>
+	<result column='board_contents' property='board_contents' javaType='java.lang.String'
+															  jdbcType='NCLOB'/>
+	<result column='member_name' property='member_name'/>
+	<result column='board_id' property='board_id'/>
+	<result column='board_date' property='board_date'/>
+	<result column='board_views' property='board_views'/>
+	<collection property="bfList" resultMap='plusFile' javaType='java.util.ArrayList'></collection>
+	</resultMap>
+	<select id='getContents' parameterType='int' resultMap="getContentsPlusFile">
+		SELECT * FROM board LEFT OUTER JOIN boardfile 
+		ON  board.board_num = boardfile.boardfile_boardNum 
+		WHERE board.board_num = #{bNum}
+	</select>
+	<insert id='replyInsertion' parameterType='reply'>
+		INSERT INTO reply VALUES(reply_seq.nextval, #{reply_boardNum}, #{reply_contents}, 
+		#{reply_id}, default)
+	</insert>
+	<select id='getReplyList' parameterType='int' resultType='reply'>
+		SELECT * FROM reply WHERE reply_boardNum = #{reply_boardNum}
+	</select>
+	<select id='getBoardCount'  resultType='int'>
+		SELECT COUNT(*) FROM boardListRownum
+	</select>
+	<insert id='writeBoardInsertion' parameterType='board' useGeneratedKeys="true" keyProperty='board_num'>
+		<selectKey keyProperty="board_num" resultType='int' order='BEFORE'>
+			SELECT board_seq.NEXTVAL FROM DUAL		
+		</selectKey>
+		INSERT INTO board VALUES (#{board_num}, #{board_subject}, #{board_contents},#{board_id},default, default)
+	</insert>
+	<!-- <select id='mybatisTest' resultType='member'>
+			SELECT * FROM memberInfo 
+			<if test="point!=null">
+			WHERE ${cName}=#{point}
+			</if>
+		</select> -->
+	<select id='mybatisTest' parameterType='Map' resultType='member'>
+		SELECT * FROM memberInfo where 
+		<if test="search!=null">
+		${cName}=#{search} and
+		</if>
+		rownum=1
+	</select>
+	
+	<select id ="selectSchedule" parameterType="schedule" resultType="schedule">
+	 	SELECT * FROM CLCOSC WHERE SC_YEAR=#{Sc_year} AND SC_MONTH=#{Sc_month} AND SC_DATE=#{Sc_date} AND SC_ID =#{Sc_id}
+	</select>
+	
+	<insert id='insertSchedule' parameterType='schedule'>
+		INSERT INTO sc VALUES(#{sc_year},#{sc_month},#{sc_date},#{sc_num},#{sc_id}#{sc_idnum},
+		#{sc_lv},#{sc_contents})
+	</insert>
+	<delete id ='deleteSchedule' parameterType='schedule'>
+		DELETE FROM sc WHERE sc_year = #{sc_year} AND sc_month = #{sc_month} AND 
+		sc_date = #{sc_date} AND sc_idnum = #{sc_idnum} AND sc_contents = #{sc_contents}
+	</delete>
+	<select id='classHomeTest' parameterType='int' resultType='board'>
+		SELECT board_num, board_contents, board_id FROM board WHERE board_num = #{board_num}
+	</select>
+	</mapper>
