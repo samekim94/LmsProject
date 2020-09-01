@@ -76,6 +76,8 @@ public class BoardRestController {
 		List<BoardBean> cList = bs.classLecture(bb);
 		return cList;
 	}
+	
+	////////////////////////////////////////////////////
 	@PostMapping(value="/rest/boardWrite")
 	public String boardWrite(MultipartHttpServletRequest multi){
 		System.out.println("subject="+multi.getParameter("board_subject"));

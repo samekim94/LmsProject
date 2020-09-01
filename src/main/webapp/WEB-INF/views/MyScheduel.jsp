@@ -73,13 +73,13 @@
 							<select name='Sc_num' id='courseList' >
 								<option value=''>강의를 먼저 선택해주세요.</option>
 							</select>
-							<br>
+							<br/>
 							 <input type="text" placeholder="일정을 적어주세욥." id="contents" name='Sc_contents' class="contents"> 
-								<input type='button' value='일정 입력' onclick=insertCalendar()
+								<input type='button' value='일정 입력' onclick="insertCalendar()"
 								class='input-data' id='input-data'>
 						</div>
 					</form>
-					<br>
+					<br/>
 					<div id="plan-output" class="plan-output" name='plan-output'></div>
 				</div>
 			</div>
@@ -209,7 +209,6 @@ function next(){
 function showMain(){ // 시작했을 때,날짜 변경시 실행
 	var option = $('#classList');
 	var classList = ${classList};
-	console.log(classList);
 	option.html("");
 	option.append("<option  value=''>강의를 선택해주세용.</option>");
 	for(var i in classList){
@@ -236,7 +235,7 @@ function showMain(){ // 시작했을 때,날짜 변경시 실행
     		str.append("<table><tbody>");
     		for(var i=0; i<json.length; i++){
 				str.append("<tr><td>"+json[i].cl_clName+"</td><td>"+json[i].co_name+"</td><td>"+json[i].sc_contents+
-						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"')\">(X)</td></tr>");
+						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"','"+json[i].sc_num+"')\">(X)</td></tr>");
     		}
     		str.append("</tbody></table>");
   			}else {
@@ -262,11 +261,19 @@ function insertCalendar(){
 		success : function(json){
     		$('#plan-output').html("");
 			var str=$('#plan-output');
+			var option = $('#classList');
+			var classList = ${classList};
+			option.html("");
+			option.append("<option  value=''>강의를 선택해주세용.</option>");
+			for(var i in classList){
+			option.append("<option value='"+classList[i].cl_idnum+"'>"+classList[i].cl_clName+"</option>");
+			} // selectBox에 강의 일련번호 = value 강의 이름 = name 넣어주기위한 반복문
+			
 			if(json.length !=0){
     		str.append("<table><tbody>");
     		for(var i=0; i<json.length; i++){
     			str.append("<tr><td>"+json[i].cl_clName+"</td><td>"+json[i].co_name+"</td><td>"+json[i].sc_contents+
-						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"')\">(X)</td></tr>");
+						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"','"+json[i].sc_num+"'')\">(X)</td></tr>");
     		}
     		str.append("</tbody></table>");
   			}else {
@@ -280,15 +287,17 @@ function insertCalendar(){
 	$('#classList').val("강의를 선택해주세요");
 	$('#contents').val(""); // insert 후 입력값 초기화 하기 위함ㅁ 
 }
-function deleteCalendar(classList, contents){
-	var classList1 = classList;
-	var contents1 = contents;
+function deleteCalendar(classList, contents, courseList){
+	var sc_idnum = classList;
+	var sc_contents = contents;
+	var sc_num = courseList;
 	var obj = $('#todoList').serializeObject();
-	obj.classList = classList1; 
-	obj.contents = contents1;
+	obj.sc_idnum = sc_idnum; 
+	obj.sc_contents = sc_contents;
+	obj.sc_num = sc_num;
 	$.ajax({
 		type: 'post' ,
-		url: "rest/deleteCalendar",
+		url: "rest/deleteScheduleAjax",
 		data: obj, 
 		dataType: 'json',
 		success: function(json){
@@ -298,7 +307,7 @@ function deleteCalendar(classList, contents){
 			if(json.length!=0){
     		for(var i=0; i<json.length; i++){    			
     			str.append("<tr><td>"+json[i].cl_clName+"</td><td>"+json[i].co_name+"</td><td>"+json[i].sc_contents+
-						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"')\">(X)</td></tr>");
+						"</td><td onclick =\"deleteCalendar('"+json[i].sc_idnum+"','"+json[i].sc_contents+"','"+json[i].sc_num+"')\">(X)</td></tr>");
     		}
     		str.append("</tbody></table>");
   			}else {

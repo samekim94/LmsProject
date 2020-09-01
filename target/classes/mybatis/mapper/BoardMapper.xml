@@ -77,12 +77,15 @@
 	</select>
 	
 	<insert id='insertSchedule' parameterType='schedule'>
-		INSERT INTO sc VALUES(#{sc_year},#{sc_month},#{sc_date},#{sc_num},#{sc_id}#{sc_idnum},
-		#{sc_lv},#{sc_contents})
+		<selectKey keyProperty='sc_lv' resultType='Integer' order='BEFORE'>
+			SELECT cl_lv FROM cl WHERE cl_idnum = #{sc_idnum} 
+		</selectKey>
+		INSERT INTO sc VALUES(#{sc_year}, #{sc_month}, #{sc_date}, #{sc_num}, #{sc_id}, #{sc_idnum},
+		#{sc_lv}, #{sc_contents})
 	</insert>
 	<delete id ='deleteSchedule' parameterType='schedule'>
-		DELETE FROM sc WHERE sc_year = #{sc_year} AND sc_month = #{sc_month} AND 
-		sc_date = #{sc_date} AND sc_idnum = #{sc_idnum} AND sc_contents = #{sc_contents}
+		DELETE FROM sc WHERE sc_year = #{sc_year} AND sc_month = #{sc_month} AND sc_date = #{sc_date} AND 
+		sc_idnum = #{sc_idnum} AND sc_contents = #{sc_contents} AND sc_id = #{sc_id} AND sc_num = #{sc_num}
 	</delete>
 	<select id='classHomeTest' parameterType='int' resultType='board'>
 		SELECT board_num, board_contents, board_id FROM board WHERE board_num = #{board_num}

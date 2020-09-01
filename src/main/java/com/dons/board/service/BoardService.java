@@ -221,6 +221,7 @@ public class BoardService {
 		// sb.setSc_id(session.getAttribute("id").toString());
 		sb.setSc_id("dons");
 		List<ScheduleBean> sList = null;
+		
 		if (bDao.insertSchedule(sb)) { // insert가 된 경우
 			sList = bDao.selectSchedule(sb); // 년 월 일 필요
 			System.out.println("달력 insert 성공 후 select까지 성공");
@@ -236,6 +237,13 @@ public class BoardService {
 		// sb.setSc_id(session.getAttribute("id").toString());
 		sb.setSc_id("dons");
 		List<ScheduleBean> sList = null;
+		System.out.println(sb.getSc_contents());
+		System.out.println(sb.getSc_date());
+		System.out.println(sb.getSc_month());
+		System.out.println(sb.getSc_year());
+		System.out.println(sb.getSc_id());
+		System.out.println(sb.getSc_num());
+		System.out.println(sb.getSc_idnum());
 		if (bDao.deleteSchedule(sb)) {
 			sList = bDao.selectSchedule(sb);
 			System.out.println("calendar delete success after select calendar");
