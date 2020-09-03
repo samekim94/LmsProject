@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.dons.board.bean.BoardBean;
+import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.SampleValueObject;
@@ -72,8 +73,8 @@ public class BoardRestController {
 		return cList;
 	}
 	@PostMapping(value="/rest/classLectureAjax")
-	public List<BoardBean> classLecture(BoardBean bb){
-		List<BoardBean> cList = bs.classLecture(bb);
+	public List<CourseBean> classLecture(ClassBean cb){
+		List<CourseBean> cList = bs.classLecture(cb);
 		return cList;
 	}
 	

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dons.board.Exception.DbException;
 import com.dons.board.bean.BoardBean;
+import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.ReplyBean;
@@ -254,22 +255,13 @@ public class BoardService {
 		return sList;
 	}
 
-	public ModelAndView classHomeTest() {
-		List<BoardBean> bList;
-		int board_num = 13;
-		bList = bDao.classHomeTest(board_num);
-		System.out.println(bList);
-
-		String view = "ClassHome";
-		mav.addObject("test", new Gson().toJson(bList));
-		mav.setViewName(view);
-		return mav;
-	}
-
-	public List<BoardBean> classLecture(BoardBean bb) {
-		System.out.println(bb);
-		List<BoardBean> cList = bDao.classLecture(bb);
-		System.out.println(cList);
+	public List<CourseBean> classLecture(ClassBean cb) {
+		//String atd_id = sessionID
+		String aa_id = "dons"; // 여기 원래 sessionId 넣어줘야함
+		CourseBean cob= new CourseBean();
+		cob.setAa_id(aa_id);
+		cob.setCo_idnum(cb.getCl_idnum());
+		List<CourseBean> cList = bDao.classLecture(cob);
 		return cList;
 	}
 
@@ -280,6 +272,25 @@ public class BoardService {
 			return cList;
 		}
 		return null;
+	}
+
+	public ModelAndView selectClassHomePage(String cl_idnum) {
+		List<ClassBean> cList;
+		mav = new ModelAndView();
+		String view;
+		double avgNum=0;
+		cList = bDao.selectClassHome(cl_idnum);
+		if(cList !=null) {
+			view = "ClassHome";
+			avgNum = bDao.selectClassAvgNum(cl_idnum);
+		}else {
+			view = "./";
+		}
+		System.out.println("강의평점="+avgNum);
+		mav.addObject("classInfo", new Gson().toJson(cList));
+		mav.addObject("avgNum",avgNum);
+		mav.setViewName(view);
+		return mav;
 	}
 
 	

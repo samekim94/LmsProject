@@ -71,7 +71,6 @@
 								<!--강의리스트 -->
 							</select> 
 							<select name='Sc_num' id='courseList' >
-								<option value=''>강의를 먼저 선택해주세요.</option>
 							</select>
 							<br/>
 							 <input type="text" placeholder="일정을 적어주세욥." id="contents" name='Sc_contents' class="contents"> 
@@ -105,7 +104,8 @@
 					<tbody id="calendar-body" class="calendar-body"></tbody>
 				</table>
 			</div>
-			<a href='classHome'>강의실로 이동 테스트</a>
+			<form action='classHome' id='testClassHome'>
+			</form>
 		</div>
 	</div>
 </body>
@@ -209,10 +209,15 @@ function next(){
 function showMain(){ // 시작했을 때,날짜 변경시 실행
 	var option = $('#classList');
 	var classList = ${classList};
+	var courseOption = $('#courseList');
+	var testClassHome = $('#testClassHome'); // 아직 classHome 이동 값 구현할 페이지가 없어서 여기에 일단 작성 아이디별 링
 	option.html("");
+	courseOption.html("");
 	option.append("<option  value=''>강의를 선택해주세용.</option>");
+	courseOption.append("<option value=''>강의를 먼저 선택해주세요.</option>");
 	for(var i in classList){
 	option.append("<option value='"+classList[i].cl_idnum+"'>"+classList[i].cl_clName+"</option>");
+	testClassHome.append("<a href='classHome?cl_idnum="+classList[i].cl_idnum+"'>"+classList[i].cl_clName+" 강의실로 이동</a><br/>");
 	} // selectBox에 강의 일련번호 = value 강의 이름 = name 넣어주기위한 반복문
 	
 	document.getElementById('month').innerHTML = today.getDate()+" "+
@@ -263,8 +268,11 @@ function insertCalendar(){
 			var str=$('#plan-output');
 			var option = $('#classList');
 			var classList = ${classList};
+			var courseOption = $('#courseList');
 			option.html("");
+			courseOption.html("");
 			option.append("<option  value=''>강의를 선택해주세용.</option>");
+			courseOption.append("<option value=''>강의를 먼저 선택해주세요.</option>");
 			for(var i in classList){
 			option.append("<option value='"+classList[i].cl_idnum+"'>"+classList[i].cl_clName+"</option>");
 			} // selectBox에 강의 일련번호 = value 강의 이름 = name 넣어주기위한 반복문

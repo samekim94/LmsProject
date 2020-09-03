@@ -13,4 +13,7 @@ private int co_num; // 회차번
 private int co_lv;
 private String co_name;
 private String co_idnum;
+
+private Integer atd_atmk;
+private String aa_id;
 }

@@ -87,7 +87,7 @@
 		DELETE FROM sc WHERE sc_year = #{sc_year} AND sc_month = #{sc_month} AND sc_date = #{sc_date} AND 
 		sc_idnum = #{sc_idnum} AND sc_contents = #{sc_contents} AND sc_id = #{sc_id} AND sc_num = #{sc_num}
 	</delete>
-	<select id='classHomeTest' parameterType='int' resultType='board'>
-		SELECT board_num, board_contents, board_id FROM board WHERE board_num = #{board_num}
+	<select id='selectClassHome' parameterType='String' resultType='class'>
+		SELECT * FROM classInfo WHERE cl_idnum = #{cl_idnum}
 	</select>
 	</mapper>

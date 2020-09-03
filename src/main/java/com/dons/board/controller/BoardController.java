@@ -67,9 +67,9 @@ public class BoardController {
 		return mav;
 	}
 	@GetMapping(value="/classHome")
-	public ModelAndView classHomeTest() {
-		//el 찍어서 넘어가기 위한 테스트.
-		mav=bs.classHomeTest();
+	public ModelAndView selectClassHome(String cl_idnum) {
+		//강의 일련번호로 classInfo view 출력해서 해당 강의로 이동 
+		mav=bs.selectClassHomePage(cl_idnum);
 		
 		return mav;
 	}

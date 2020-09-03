@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.dons.board.bean.BoardBean;
+import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.ReplyBean;
@@ -50,12 +51,17 @@ public interface IBoardDao {
 
 	boolean deleteSchedule(ScheduleBean cb);
 
-	List<BoardBean> classHomeTest(int board_num);
+	List<ClassBean> selectClassHome(String cl_idnum);
 
-	@Select("SELECT * FROM board WHERE board_num=#{board_num}")
-	List<BoardBean> classLecture(BoardBean bb);
+	
 	@Select("SELECT * FROM co WHERE co_idnum = #{co_idnum}")
 	List<CourseBean> selectCourseList(CourseBean cb);
+	
+	@Select("SELECT ROUND(AVG(gpa_gpa),1) FROM gpa WHERE gpa_idnum = #{cl_idnum}")
+	double selectClassAvgNum(String cl_idnum);
+	
+	@Select("SELECT * FROM courseAttend WHERE co_idnum=#{co_idnum} AND aa_id = #{aa_id}")
+	List<CourseBean> classLecture(CourseBean cob);
 
 
 
