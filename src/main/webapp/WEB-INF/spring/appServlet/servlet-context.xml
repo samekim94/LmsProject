@@ -44,6 +44,7 @@
 	<exclude-mapping path="/joinFrmInsert"/>
 	<exclude-mapping path="/selectMyCalendarPage"/>
 	<exclude-mapping path="/classHome"/>
+	<exclude-mapping path="/selectClassLectureVideoPage"/>
 	<beans:bean class="com.dons.board.userClass.SessionInterceptor"/>
 	
 	</interceptor>

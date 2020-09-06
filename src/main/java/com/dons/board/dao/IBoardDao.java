@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Select;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
@@ -62,6 +63,9 @@ public interface IBoardDao {
 	
 	@Select("SELECT * FROM courseAttend WHERE co_idnum=#{co_idnum} AND aa_id = #{aa_id}")
 	List<CourseBean> classLecture(CourseBean cob);
+	
+	@Select("SELECT * FROM classFileName WHERE fl_idnum=#{fl_idnum} AND fl_num=#{fl_num} AND fl_id=#{fl_id}")
+	List<FileBean> selectLectureVideoPage(FileBean fl);
 
 
 

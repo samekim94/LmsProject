@@ -167,9 +167,13 @@
     		$('#lectureTable').append("<tr><td>회차</td><td>강좌명</td><td>수강여부</td></tr>");
     		for(var i in json){
     				 if(json[i].atd_atmk !=null){
-    					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"+json[i].co_num+"강</td><td><a href=''>"+json[i].co_name+"</a></td><td>수강완료</td></tr>");    				
+    					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"
+    					+json[i].co_num+"강</td><td><a href='selectClassLectureVideoPage?co_idnum="
+    					+json[i].co_idnum+"&co_num="+json[i].co_num+"' target='_blank'>"+json[i].co_name+"</a></td><td>수강완료</td></tr>");    				
     				}else{
-    					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"+json[i].co_num+"강</td><td><a href=''>"+json[i].co_name+"</a></td><td>미수강</td></tr>");
+    					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"
+    					+json[i].co_num+"강</td><td><a href='selectClassLectureVideoPage?co_idnum="
+    					+json[i].co_idnum+"&co_num="+json[i].co_num+"' target='_blank'>"+json[i].co_name+"</a></td><td>미수강</td></tr>");
     				}	
     			}//for 
     		}// 로그인 if else에서 else문 end

@@ -73,4 +73,11 @@ public class BoardController {
 		
 		return mav;
 	}
+	@GetMapping(value="/selectClassLectureVideoPage")
+	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num) {
+		//강의 일련번호로 classInfo view 출력해서 해당 강의로 이동 
+		mav=bs.selectClassLectureVideoPage(co_idnum, co_num);
+		
+		return mav;
+	}
 }

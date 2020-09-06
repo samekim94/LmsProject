@@ -19,6 +19,7 @@ import com.dons.board.Exception.DbException;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
@@ -290,6 +291,26 @@ public class BoardService {
 		mav.addObject("classInfo", new Gson().toJson(cList));
 		mav.addObject("avgNum",avgNum);
 		mav.setViewName(view);
+		return mav;
+	}
+	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num) {
+		FileBean fl = new FileBean();
+		mav = new ModelAndView();
+		String view;
+		fl.setFl_idnum(co_idnum);
+		fl.setFl_num(co_num);
+		fl.setFl_id("dons"); // 아직 session 받아올 id값이 없음 
+		List<FileBean> fList;
+		fList = bDao.selectLectureVideoPage(fl);
+		System.out.println(fList);
+		if(fList != null) { //select success
+			view="LectureVideo";
+		} else {
+			view="./";
+		}
+		mav.addObject("LectureInfo", new Gson().toJson(fList));
+		mav.setViewName(view);
+		
 		return mav;
 	}
 
