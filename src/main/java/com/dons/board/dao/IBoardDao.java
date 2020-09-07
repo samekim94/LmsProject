@@ -7,12 +7,14 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
+import com.dons.board.bean.MemoBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
 import com.dons.board.bean.boardFileEntity;
@@ -66,6 +68,12 @@ public interface IBoardDao {
 	
 	@Select("SELECT * FROM classFileName WHERE fl_idnum=#{fl_idnum} AND fl_num=#{fl_num} AND fl_id=#{fl_id}")
 	List<FileBean> selectLectureVideoPage(FileBean fl);
+	@Insert("INSERT INTO memo values(#{mo_idnum},#{mo_lv},#{mo_num},#{mo_id},#{mo_contents})")
+	boolean insertMemo(MemoBean mb);
+	@Select("SELECT * FROM memo WHERE mo_idnum=#{mo_idnum} AND mo_num=#{mo_num} AND mo_id=#{mo_id}")
+	List<MemoBean> selectMemo(MemoBean mb);
+	@Update("UPDATE memo SET mo_contents = #{mo_contents} where mo_idnum=#{mo_idnum} AND mo_num=#{mo_num} AND mo_id = #{mo_id}")
+	boolean updateMemo(MemoBean mb);
 
 
 

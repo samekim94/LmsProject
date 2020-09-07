@@ -21,6 +21,7 @@ import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
+import com.dons.board.bean.MemoBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
 import com.dons.board.bean.boardFileEntity;
@@ -212,9 +213,9 @@ public class BoardService {
 		System.out.println(sb.getSc_month());
 		System.out.println(sb.getSc_date());
 		List<ScheduleBean> sList = bDao.selectSchedule(sb);
-		if(sList!=null) {
-			return sList;			
-		} else {			
+		if (sList != null) {
+			return sList;
+		} else {
 			return null;
 		}
 	}
@@ -223,7 +224,7 @@ public class BoardService {
 		// sb.setSc_id(session.getAttribute("id").toString());
 		sb.setSc_id("dons");
 		List<ScheduleBean> sList = null;
-		
+
 		if (bDao.insertSchedule(sb)) { // insert가 된 경우
 			sList = bDao.selectSchedule(sb); // 년 월 일 필요
 			System.out.println("달력 insert 성공 후 select까지 성공");
@@ -257,9 +258,9 @@ public class BoardService {
 	}
 
 	public List<CourseBean> classLecture(ClassBean cb) {
-		//String atd_id = sessionID
+		// String atd_id = sessionID
 		String aa_id = "dons"; // 여기 원래 sessionId 넣어줘야함
-		CourseBean cob= new CourseBean();
+		CourseBean cob = new CourseBean();
 		cob.setAa_id(aa_id);
 		cob.setCo_idnum(cb.getCl_idnum());
 		List<CourseBean> cList = bDao.classLecture(cob);
@@ -267,9 +268,9 @@ public class BoardService {
 	}
 
 	public List<CourseBean> selectCourseList(CourseBean cb) {
-		List<CourseBean> cList; 
+		List<CourseBean> cList;
 		cList = bDao.selectCourseList(cb);
-		if(cList !=null) {
+		if (cList != null) {
 			return cList;
 		}
 		return null;
@@ -279,41 +280,75 @@ public class BoardService {
 		List<ClassBean> cList;
 		mav = new ModelAndView();
 		String view;
-		double avgNum=0;
+		double avgNum = 0;
 		cList = bDao.selectClassHome(cl_idnum);
-		if(cList !=null) {
+		if (cList != null) {
 			view = "ClassHome";
 			avgNum = bDao.selectClassAvgNum(cl_idnum);
-		}else {
+		} else {
 			view = "./";
 		}
-		System.out.println("강의평점="+avgNum);
+		System.out.println("강의평점=" + avgNum);
 		mav.addObject("classInfo", new Gson().toJson(cList));
-		mav.addObject("avgNum",avgNum);
+		mav.addObject("avgNum", avgNum);
 		mav.setViewName(view);
 		return mav;
 	}
+
 	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num) {
 		FileBean fl = new FileBean();
 		mav = new ModelAndView();
 		String view;
 		fl.setFl_idnum(co_idnum);
 		fl.setFl_num(co_num);
-		fl.setFl_id("dons"); // 아직 session 받아올 id값이 없음 
+		fl.setFl_id("dons"); // 아직 session 받아올 id값이 없음
 		List<FileBean> fList;
 		fList = bDao.selectLectureVideoPage(fl);
 		System.out.println(fList);
-		if(fList != null) { //select success
-			view="LectureVideo";
+		if (fList != null) { // select success
+			view = "LectureVideo";
 		} else {
-			view="./";
+			view = "./";
 		}
 		mav.addObject("LectureInfo", new Gson().toJson(fList));
 		mav.setViewName(view);
-		
+
 		return mav;
 	}
 
-	
+	public List<MemoBean> insertMemo(MemoBean mb) {
+		List<MemoBean> mList;
+		mb.setMo_id("dons"); // sessionID로 수정해야하는 값
+		mList = bDao.selectMemo(mb); // 작성하기 전 테이블에 저장값 있는지 확인
+		if (mList != null) {
+			System.out.println("이미 테이블에 메모 저장값 있음");
+			if(bDao.updateMemo(mb)) {
+				System.out.println("update success");
+				mList = bDao.selectMemo(mb);
+			}else {
+				System.out.println("update fail");
+				mList = null;
+			}
+		}else {// 저장값 확인 위한 if문 END
+			if (bDao.insertMemo(mb)) {
+				System.out.println("insert success");
+				mList = bDao.selectMemo(mb);
+			} else {
+				System.out.println("insert fail");
+				mList = null;
+			}
+		}// 저장값이 없어서 insert 돌린 문 END
+		return mList;
+	}//insertMemo END
+
+	public List<MemoBean> selectMemoForStart(MemoBean mb) {
+		mb.setMo_id("dons"); //sessionID값으로 바꿔줘야함
+		List<MemoBean> mList;
+		mList = bDao.selectMemo(mb);
+		if(mList!=null) {
+			return mList;
+		}else 
+			return null;
+	}
 
 }

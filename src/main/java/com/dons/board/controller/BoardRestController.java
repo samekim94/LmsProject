@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.MemoBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.SampleValueObject;
 import com.dons.board.bean.ScheduleBean;
@@ -77,7 +78,17 @@ public class BoardRestController {
 		List<CourseBean> cList = bs.classLecture(cb);
 		return cList;
 	}
-	
+	@PostMapping(value="/rest/selectMemoForStart")
+	public List<MemoBean> selectMemoForStart(MemoBean mb){
+		List<MemoBean> mList = bs.selectMemoForStart(mb);
+			return mList;			
+		
+	}
+	@PostMapping(value="/rest/insertMemoAjax")
+	public List<MemoBean> insertMemo(MemoBean mb){
+		List<MemoBean> mList = bs.insertMemo(mb);
+		return mList;
+	}
 	////////////////////////////////////////////////////
 	@PostMapping(value="/rest/boardWrite")
 	public String boardWrite(MultipartHttpServletRequest multi){
