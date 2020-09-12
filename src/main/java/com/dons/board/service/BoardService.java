@@ -3,6 +3,7 @@ package com.dons.board.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.MemoBean;
+import com.dons.board.bean.ProblemBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
 import com.dons.board.bean.boardFileEntity;
@@ -295,7 +297,7 @@ public class BoardService {
 		return mav;
 	}
 
-	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num) {
+	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num, String atd_atmk) {
 		FileBean fl = new FileBean();
 		mav = new ModelAndView();
 		String view;
@@ -310,7 +312,9 @@ public class BoardService {
 		} else {
 			view = "./";
 		}
+		System.out.println(atd_atmk);
 		mav.addObject("LectureInfo", new Gson().toJson(fList));
+		mav.addObject("atmk", atd_atmk);
 		mav.setViewName(view);
 
 		return mav;
@@ -322,14 +326,14 @@ public class BoardService {
 		mList = bDao.selectMemo(mb); // 작성하기 전 테이블에 저장값 있는지 확인
 		if (mList != null) {
 			System.out.println("이미 테이블에 메모 저장값 있음");
-			if(bDao.updateMemo(mb)) {
+			if (bDao.updateMemo(mb)) {
 				System.out.println("update success");
 				mList = bDao.selectMemo(mb);
-			}else {
+			} else {
 				System.out.println("update fail");
 				mList = null;
 			}
-		}else {// 저장값 확인 위한 if문 END
+		} else {// 저장값 확인 위한 if문 END
 			if (bDao.insertMemo(mb)) {
 				System.out.println("insert success");
 				mList = bDao.selectMemo(mb);
@@ -337,18 +341,70 @@ public class BoardService {
 				System.out.println("insert fail");
 				mList = null;
 			}
-		}// 저장값이 없어서 insert 돌린 문 END
+		} // 저장값이 없어서 insert 돌린 문 END
 		return mList;
-	}//insertMemo END
+	}// insertMemo END
 
 	public List<MemoBean> selectMemoForStart(MemoBean mb) {
-		mb.setMo_id("dons"); //sessionID값으로 바꿔줘야함
+		mb.setMo_id("dons"); // sessionID값으로 바꿔줘야함
 		List<MemoBean> mList;
 		mList = bDao.selectMemo(mb);
-		if(mList!=null) {
+		if (mList != null) {
 			return mList;
-		}else 
+		} else
 			return null;
 	}
 
-}
+	public ModelAndView selectPreviewQuiz(String cl_idnum) {
+		System.out.println(cl_idnum);
+		ProblemBean pb = new ProblemBean();
+		Random random = new Random();
+		Map<String, List<ProblemBean>> pMap = new HashMap<>();
+		int QuizNum = 5;
+		int[] coNum = new int[QuizNum];
+		int[] pbNum = new int[QuizNum];
+		List<CourseBean> cList = bDao.selectCourseNum(cl_idnum);
+
+		for (int i = 0; i < QuizNum; i++) {
+			if (cList != null) {
+				int courseNum = random.nextInt(cList.size()) + 1;
+				pb.setPb_idnum(cl_idnum);
+				pb.setPb_num(courseNum);
+				coNum[i] = courseNum;
+				List<ProblemBean> pList = bDao.selectProblemNum(pb);
+				if (pList != null) {
+					pb.setPb_pbnum(random.nextInt(pList.size()) + 1);
+					pbNum[i] = pb.getPb_pbnum();
+					pList = bDao.selectPreviewQuiz(pb);
+					System.out.println(pList);
+					if (pList != null) {
+						pMap.put("Quiz" + (i + 1), pList);
+						if (i > 0) {
+							for (int j = 0; j < i; j++) {
+								if (coNum[j] == coNum[i] && pbNum[j] == pbNum[i]) {
+									i--;
+									break;
+								}
+							}
+						}
+					} else {
+						System.out.println("problemView table select fail");
+						mav.addObject("previewQuiz", "문제 출력에 실패했습니다. 원인: 퀴즈 일련번호 오류");
+					}
+				} else {
+					System.out.println("problem table select fail");
+					mav.addObject("previewQuiz", "문제 출력에 실패했습니다. 원인: 강좌 일련번호 오류");
+				}
+			} else {
+				System.out.println("course table select fail");
+				mav.addObject("previewQuiz", "문제 출력에 실패했습니다. 원인: 강의 일련번호 오류");
+			}
+		} // 초기 for문
+		if (pMap != null) {
+			mav.addObject("previewQuiz", new Gson().toJson(pMap));
+		}
+		mav.setViewName("PreviewQuiz");
+		return mav;
+	}
+
+}//selectPreviewQuiz END 

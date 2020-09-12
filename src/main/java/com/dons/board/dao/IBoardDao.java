@@ -15,6 +15,7 @@ import com.dons.board.bean.CourseBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.MemoBean;
+import com.dons.board.bean.ProblemBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.ScheduleBean;
 import com.dons.board.bean.boardFileEntity;
@@ -74,6 +75,12 @@ public interface IBoardDao {
 	List<MemoBean> selectMemo(MemoBean mb);
 	@Update("UPDATE memo SET mo_contents = #{mo_contents} where mo_idnum=#{mo_idnum} AND mo_num=#{mo_num} AND mo_id = #{mo_id}")
 	boolean updateMemo(MemoBean mb);
+	@Select("SELECT * FROM course WHERE co_idnum = #{cl_idnum}")
+	List<CourseBean> selectCourseNum(String cl_idnum);
+	@Select("SELECT * FROM problem WHERE pb_idnum=#{pb_idnum} AND pb_num = #{pb_num}")
+	List<ProblemBean> selectProblemNum(ProblemBean pb);
+	@Select("SELECT * FROM problemView WHERE pb_idnum = #{pb_idnum} AND pb_num = #{pb_num} AND pb_pbnum = #{pb_pbnum}")
+	List<ProblemBean> selectPreviewQuiz(ProblemBean pb);
 
 
 

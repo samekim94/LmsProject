@@ -45,6 +45,7 @@
 	<exclude-mapping path="/selectMyCalendarPage"/>
 	<exclude-mapping path="/classHome"/>
 	<exclude-mapping path="/selectClassLectureVideoPage"/>
+	<exclude-mapping path="/selectPreviewQuiz"/>
 	<beans:bean class="com.dons.board.userClass.SessionInterceptor"/>
 	
 	</interceptor>

@@ -66,6 +66,7 @@ public class BoardController {
 		mav=bs.mybatisTest(hMap);
 		return mav;
 	}
+	///////////////////////////////////////////////////
 	@GetMapping(value="/classHome")
 	public ModelAndView selectClassHome(String cl_idnum) {
 		//강의 일련번호로 classInfo view 출력해서 해당 강의로 이동 
@@ -74,10 +75,16 @@ public class BoardController {
 		return mav;
 	}
 	@GetMapping(value="/selectClassLectureVideoPage")
-	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num) {
+	public ModelAndView selectClassLectureVideoPage(String co_idnum, int co_num, String atd_atmk) {
 		//강의 일련번호로 classInfo view 출력해서 해당 강의로 이동 
-		mav=bs.selectClassLectureVideoPage(co_idnum, co_num);
+		mav=bs.selectClassLectureVideoPage(co_idnum, co_num, atd_atmk);
 		
 		return mav;
 	}
+	@GetMapping(value="/selectPreviewQuiz")
+	public ModelAndView selectPreviewQuiz(String cl_idnum) {
+		mav=bs.selectPreviewQuiz(cl_idnum);
+		return mav;
+	}
+	//////////////////////////////////
 }

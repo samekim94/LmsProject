@@ -111,9 +111,8 @@
     </div>
         
     </body>
-    <script>
-        //강의실 들어오자마자 강좌소개에 필요한 값 ajax 밑 div 찍어주기 위한 함수 실행 
-        classInfoAjax();
+    <script> 
+        classInfoAjax();  //강의실 들어오자마자 강좌소개에 필요한 값 ajax 밑 div 찍어주기 위한 함수 실행
     function test(){
         alert('성공');
     };
@@ -140,12 +139,19 @@
         var str=$("#classRight");
         str.append("<div style='width:1036px; height:80px;'><h3>해당강의 맛보기 문제 풀어보기</h3><hr style='width:350px;'>");
         str.append("<div>해당강의의 맛보기 문제를 풀어볼 수 있습니다.</div><div>해당강의와 level이 맞지 않으면 맛보기 문제를 풀어주세요.</div>");
-        str.append("<br><a href='x'><button>맛보기문제 풀러 가기 ---></button></a>");
+        str.append("<br><input type='button' onclick='previewQuiz()' value='맛보기문제 풀러가기'>");
         str.append("<br><br><hr style='width:350px;'></div>");
         // 수강후기 ajax 타고와서 table 찍어줌
         str.append("<div style='width:1036px; height:300px;'><br><br><div>수강후기 <input type='button' value='+더보기' onclick='test()'><hr style='width:100px;'></div><br><div>ajax로 수강후기 테이블 출력할 위치</div>");
         str.append("</div>");
-    };
+    }//classInfoAjax() END
+    
+    function previewQuiz(){
+    	var classPk=$('#classPk').val(); //cl_clname
+    	console.log(classPk);
+    	window.open("selectPreviewQuiz?cl_idnum="+classPk,'_blank','width=800, height=600, top=200, left=200'); 
+    	
+    }// previewQuiz() END
     
     function classLectureAjax(){ // 강의목록 ajax
     $("#classRight").html(""); //classRight 초기화 후 강의목록 테이블 찍어주기 위한 초기화 과정	
@@ -169,11 +175,13 @@
     				 if(json[i].atd_atmk !=null){
     					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"
     					+json[i].co_num+"강</td><td><a href='selectClassLectureVideoPage?co_idnum="
-    					+json[i].co_idnum+"&co_num="+json[i].co_num+"' target='_blank'>"+json[i].co_name+"</a></td><td>수강완료</td></tr>");    				
+    					+json[i].co_idnum+"&co_num="+json[i].co_num+"&atd_atmk="+json[i].atd_atmk+"' target='_blank'>"
+    					+json[i].co_name+"</a></td><td>수강완료</td></tr>");    				
     				}else{
     					$('#lectureTable').append("<tr style='border-bottom:1px solid black;'><td>"
     					+json[i].co_num+"강</td><td><a href='selectClassLectureVideoPage?co_idnum="
-    					+json[i].co_idnum+"&co_num="+json[i].co_num+"' target='_blank'>"+json[i].co_name+"</a></td><td>미수강</td></tr>");
+    					+json[i].co_idnum+"&co_num="+json[i].co_num+"&atd_atmk="+json[i].atd_atmk+"' target='_blank'>"
+    					+json[i].co_name+"</a></td><td>미수강</td></tr>");
     				}	
     			}//for 
     		}// 로그인 if else에서 else문 end
