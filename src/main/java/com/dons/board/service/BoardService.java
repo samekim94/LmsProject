@@ -20,6 +20,7 @@ import com.dons.board.Exception.DbException;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.CourseBoardBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.MemoBean;
@@ -407,4 +408,41 @@ public class BoardService {
 		return mav;
 	}
 
-}//selectPreviewQuiz END 
+	public List<CourseBoardBean> selectClassNotice(CourseBoardBean CNB) {
+		List<CourseBoardBean> CNBList = bDao.selectClassNotice(CNB);
+		return CNBList;
+	}
+
+	public List<CourseBoardBean> selectClassQNA(CourseBoardBean QNA) {
+		QNA.setCob_id("dons"); // sessionID 넣어야함
+		List<CourseBoardBean> QNAList = bDao.selectClassQNA(QNA);
+		if (QNAList != null) {
+			return QNAList;
+		} else {
+			return null;
+		}
+	}
+
+	public List<CourseBoardBean> insertMyClassQNA(CourseBoardBean QNA) {
+		// id , bonum
+		if (QNA.getCob_kind() != 2) {
+			return null;
+		} else {
+			List<CourseBoardBean> QNAList;
+			QNA.setCob_bonum("MQ");
+			QNA.setCob_id("dons"); // sessionID 넣어야
+			String cont = QNA.getCob_cont();
+			cont.replace("\r\n", "<br/>");
+			QNA.setCob_cont(cont);
+			if (bDao.insertMyClassQna(QNA)) {
+				System.out.println("success success success");
+				QNAList = bDao.selectClassQNA(QNA);
+				return QNAList;
+			} else {
+				System.out.println("fail fail fail fail");
+				return null;
+			}
+		}
+	}
+
+}// boardService END

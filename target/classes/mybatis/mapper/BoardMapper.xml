@@ -90,4 +90,7 @@
 	<select id='selectClassHome' parameterType='String' resultType='class'>
 		SELECT * FROM classInfo WHERE cl_idnum = #{cl_idnum}
 	</select>
+	<insert id='insertMyClassQna' parameterType='courseBoard'>
+		INSERT INTO cob VALUES(#{cob_idnum}, #{cob_lv}, #{cob_num}, #{cob_id}, #{cob_bonum}||LPAD(MQ_SEQ.NEXTVAL,5,0), #{cob_title}, #{cob_cont}, default, #{cob_kind})
+	</insert>
 	</mapper>

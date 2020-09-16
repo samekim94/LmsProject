@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassHome</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="resources/js/jquery.serializeObject.js"></script>
+    
 
     <style>
         .html, body{
@@ -89,13 +91,14 @@
             <li id='professorAnotherClass' onclick='test()'><h5>강사의 다른 강의 list ajax</h5></li>
         </ul>
         	<input type='hidden' value='' name='cl_idnum' id='classPk' class='classPk'>
+        	<input type='hidden' value='' name='cob_kind' id='boardKind' class='boardKind'>
     </div>
     <div id='classNav' name='classNav' class='classNav'>
         <ul>
             <li id='classInfoAjax' class='li' onclick='classInfoAjax()'> 강의소개   </li>
             <li id='classVideoTableAjax' class='li' onclick='classLectureAjax()'> 강의목록 </li>
-            <li id='classInfoBoard' class='li' onclick='test()'> 공지사항  </li>
-            <li id='classQNA' class='li' onclick='test()'> Q&A </li>
+            <li id='classNotice' class='li' onclick='classNotice()'> 공지사항  </li>
+            <li id='classQNA' class='li' onclick='classQNA()'> Q&A </li>
             <li id='classPostscriot' class='li' onclick='test()'> 수강후기  </li>
             <li id='classReference' class='li' onclick='test()'> 자료실  </li>
         </ul>
@@ -148,7 +151,6 @@
     
     function previewQuiz(){
     	var classPk=$('#classPk').val(); //cl_clname
-    	console.log(classPk);
     	window.open("selectPreviewQuiz?cl_idnum="+classPk,'_blank','width=800, height=600, top=200, left=200'); 
     	
     }// previewQuiz() END
@@ -162,7 +164,6 @@
     	data: classPk,
     	dataType:'json',
     	success: function(json){
-    		console.log(json);
     		var lectureList=$('#classRight'); //여기에 table 출력
     		if(json[0].aa_id ==null){
     			alert("로그인 후 이용해주세요.");
@@ -190,5 +191,152 @@
     	}
     }); //classLecture 의 ajax END
     }; //function classLectureAjax 의 END
+    
+    function classNotice(){
+    	$('#boardKind').val(1);
+    	var obj = {
+    		'cob_idnum':$('#classPk').val(),
+    		'cob_kind':$('#boardKind').val()
+    	}
+    	$.ajax({
+    		type: 'post',
+    		url: 'rest/selectClassNoticeAjax',
+    		data: obj, 
+    		dataType: 'json', 
+    		success: function(json){
+    			//console.log(json);
+    			var notice = $('#classRight');
+    			notice.html("");
+    			notice.append("<div id='noticeDiv' style='width:1036px; height:652px;'><table id='noticeTable' style='margin:auto; border-collapse:collapse;'></table></div>");
+    			var noticeTable = $('#noticeTable');
+    			noticeTable.append("<tr><td>번호</td><td>구분</td><td>제목</td><td>등록일</td></tr>");
+    			if(json != ""){
+    				for(var i in json){
+    					//console.log("1=",json[i]);
+    					var boardInfo = JSON.stringify(json[i]);
+    					//console.log(boardInfo);
+    					noticeTable.append("<tr id='tr_"+i+"'></tr>");
+    					var noticeTr = $('#tr_'+i);
+    					noticeTr.append("<td>"+json[i].cob_bonum.substring(3)+"</td>");    					
+    					noticeTr.append("<td>"+json[i].bk_boardName+"</td>");    					
+    					noticeTr.append("<td><a href='#;' onclick='classNoticeDetail("+boardInfo+")'>"+json[i].cob_title+"</a></td>");    					
+    					noticeTr.append("<td>"+json[i].cob_date+"</td>");    					
+    				}
+    			}else{
+    				noticeTable.append("<tr><td colspan='4'>등록된 게시글이 없습니다.</td></tr>");
+    			}
+    		}, error: function(err){
+    			console.log(err);
+    		}
+    	});//classNotice Ajax END
+    }//function classNotice() END
+    
+    function classNoticeDetail(info){
+    	classInfo = ${classInfo};
+    	console.log(info);
+    	//var boardInfo = JSON.parse(info);
+    	var noticeDetail = $('#classRight');
+    	noticeDetail.html("");
+		noticeDetail.append("<div id='noticeDetailDiv' style='width:800px; height:300px; margin:auto; text-align:left;'></div>");    	
+		//$('#noticeDetailDiv').append("<table style='margin:auto; border-collapse:collapse; border:1px;'><tr><td>"+info.bk_boardName+"</td><td>"+info.cob_title+"</td><td>"+info.cob_date+"</td></tr></table>")
+    	$('#noticeDetailDiv').append("<h4>"+info.bk_boardName+"</h4><hr>");
+		$('#noticeDetailDiv').append("<table id='noticeDetailTable' style='margin:auto; border-collapse:collapse; float:left;'><tr><td>제목:</td><td>"+info.cob_title+"</td></tr></table>");
+		$('#noticeDetailTable').append("<tr><td>강사명</td><td>"+classInfo[0].mb_name+"</td></tr>");
+		$('#noticeDetailTable').append("<tr><td>작성일</td><td>"+info.cob_date+"</td></tr>");
+		$('#noticeDetailDiv').append("<div style='float:left; margin:auto; width:800px; height:300px;'><hr><br/>"+info.cob_cont+"</div>");
+		$('#noticeDetailDiv').append("<input type='button' value='돌아가기' onclick='classInfoAjax()'>");
+    }
+    
+    function classQNA(){
+    	$('#boardKind').val(2);
+    	var obj = {
+        		'cob_idnum':$('#classPk').val(),
+        		'cob_kind':$('#boardKind').val()
+        	}
+    	$.ajax({
+    		type: 'post',
+    		url: 'rest/selectClassQNA', 
+    		data: obj, 
+    		dataType: 'json', 
+    		success: function(json){
+    			console.log(json);
+    			$('#classRight').html("");
+    			$('#classRight').append("<div id='QNADiv' style='width:1036px; height:652px;'></div>");
+    			$('#QNADiv').append("<input type='button' value='Q&A 작성' onclick='classInsertViewQNA()'>");
+    			$('#QNADiv').append("<table id='QNATable' style='margin:auto; border-collapse:collapse;'></table>");
+    			$('#QNATable').append("<tr><td>번호</td><td>구분</td><td>강좌</td><td>제목</td><td>등록일</td></tr>");
+    			if(json!=""){
+    				alert('이거 아직 안 나올거임');
+    			}else{
+    				$('#QNATable').append("<tr><td colspan='5'>등록된 게시글이 없습니다.</td></tr>");
+    			}
+    		}, error: function(err){
+    			console.log(err);
+    		}
+    	});
+    }//function classQNA()END
+    
+    function classInsertViewQNA(){
+        var classPk= $('#classPk');
+    	$.ajax({
+    		type: 'post', 
+    		url: 'rest/classLectureAjax', 
+    		data: classPk, 
+    		dataType: 'json', 
+    		success: function(json){
+    			var cr = $('#classRight'); 
+    			cr.html("");
+    			cr.append("<div id='insertQNADiv' style='width:500px; height:652px; margin:auto;'></div>");
+    			var iDiv = $('#insertQNADiv');
+    			var str=""; 
+    			
+    			str += "<form name='insertFrmQNA' id='insertFrmQNA'>";
+    			str += "<input type='hidden' name='cob_idnum' value='"+classPk.val()+"'>";
+    			str += "<input type='hidden' name='cob_lv' value='"+json[0].co_lv+"'><br/>"
+    			str += "<input type='hidden' name= cob_kind value='"+$('#boardKind').val()+"'>"; 
+    			str += "<select id='cob_num' name='cob_num'><option value=''>강좌를 선택해주세요.</option>";
+    			for(var i in json){
+    				str += "<option value='"+json[i].co_num+"'>"+json[i].co_name+"</option>";
+    			}
+    			str += "</select><br/><hr>";
+    			str += "<input type='text' placeholder='제목을 입력해주세요.' name='cob_title'><br/><br/>";
+    			str += "<textarea id='cob_cont' name='cob_cont' cols='40' rows='20'></textarea><br/>";
+    			
+    			str += "<input type='button' value='작성하기' onclick='insertQNA()'></form>";
+    			iDiv.append(str);
+    		}, error: function(err){
+    			console.log(err);
+    		} 
+    	})//course select Ajax END
+    }//function classInsertQNA() END
+    
+    function insertQNA(){
+    	var $confirm = confirm("Q&A를 작성하시겠습니까?");
+    	if($confirm == true){
+    		var obj = $('#insertFrmQNA').serializeObject();
+    		console.log(obj);
+    		
+    		$.ajax({
+    			type: 'post',
+    			url: 'rest/insertMyClassQnaAjax',
+    			data: obj,
+    			dataType: 'json',
+    			success: function(json){
+    					console.log(json);
+    					if(json != ""){
+    						alert("Q&A 작성이 완료되었습니다.");
+    						classQNA();
+    					}else{
+    						alert("Q&A 작성에 실패했습니다.");
+    						classInsertViewQNA()
+    					}
+    				},error: function(err){
+    				console.log(err);
+    				}
+    			}); // insertQNA ajax END
+    		}else{//confirm if
+    			return;
+    		}
+    }//function insertQNA() END
 </script>
 </html>

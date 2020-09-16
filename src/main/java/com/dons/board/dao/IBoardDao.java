@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Update;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.CourseBoardBean;
 import com.dons.board.bean.FileBean;
 import com.dons.board.bean.MemberBean;
 import com.dons.board.bean.MemoBean;
@@ -81,6 +82,13 @@ public interface IBoardDao {
 	List<ProblemBean> selectProblemNum(ProblemBean pb);
 	@Select("SELECT * FROM problemView WHERE pb_idnum = #{pb_idnum} AND pb_num = #{pb_num} AND pb_pbnum = #{pb_pbnum}")
 	List<ProblemBean> selectPreviewQuiz(ProblemBean pb);
+	@Select("SELECT * FROM courseBoardKind WHERE cob_idnum=#{cob_idnum} AND cob_kind=#{cob_kind}")
+	List<CourseBoardBean> selectClassNotice(CourseBoardBean cNB);
+	@Select("SELECT * FROM courseBoardKind WHERE cob_idnum=#{cob_idnum} AND cob_kind=#{cob_kind} AND cob_id = #{cob_id}")
+	List<CourseBoardBean> selectClassQNA(CourseBoardBean QNA);
+	
+	boolean insertMyClassQna(CourseBoardBean QNA);
+
 
 
 

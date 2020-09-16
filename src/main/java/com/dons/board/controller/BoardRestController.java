@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.dons.board.bean.BoardBean;
 import com.dons.board.bean.ClassBean;
 import com.dons.board.bean.CourseBean;
+import com.dons.board.bean.CourseBoardBean;
 import com.dons.board.bean.MemoBean;
 import com.dons.board.bean.ReplyBean;
 import com.dons.board.bean.SampleValueObject;
@@ -88,6 +89,22 @@ public class BoardRestController {
 	public List<MemoBean> insertMemo(MemoBean mb){
 		List<MemoBean> mList = bs.insertMemo(mb);
 		return mList;
+	}
+	@PostMapping(value="/rest/selectClassNoticeAjax")
+	public List<CourseBoardBean> selectClassNotice(CourseBoardBean CNB){
+		List<CourseBoardBean> CNBList = bs.selectClassNotice(CNB);
+		return CNBList;
+	}
+	@PostMapping(value="/rest/selectClassQNA")
+	public List<CourseBoardBean> selectClassQNA(CourseBoardBean QNA){
+		List<CourseBoardBean> QNAList = bs.selectClassQNA(QNA);
+		
+		return QNAList;
+	}
+	@PostMapping(value="/rest/insertMyClassQnaAjax")
+	public List<CourseBoardBean> insertMyClassQNA(CourseBoardBean QNA) {
+		List<CourseBoardBean> QNAList = bs.insertMyClassQNA(QNA);
+		return QNAList;
 	}
 	////////////////////////////////////////////////////
 	@PostMapping(value="/rest/boardWrite")
