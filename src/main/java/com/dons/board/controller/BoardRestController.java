@@ -106,6 +106,41 @@ public class BoardRestController {
 		List<CourseBoardBean> QNAList = bs.insertMyClassQNA(QNA);
 		return QNAList;
 	}
+	@PostMapping(value="/rest/selectClassQnaDetail")
+	public List<CourseBoardBean> selectMyQnaDetail(CourseBoardBean QNA){
+		List<CourseBoardBean> QNAList = bs.selectMyQnaDetail(QNA);
+		return QNAList;
+	}
+	@PostMapping(value="/rest/insertQnaReply")
+	public String insertQnaReply(CourseBoardBean QR) {
+		String bonum = bs.insertQnaReply(QR);
+		return bonum;
+	}
+	@PostMapping(value="/rest/selectClassReview")
+	public List<CourseBoardBean> selectClassReview(CourseBoardBean review){
+		List<CourseBoardBean> rList = bs.selectClassReview(review);
+		return rList;
+	}
+	@PostMapping(value="/rest/selectMyClassAvg")
+	public double selectMyClassAvg(CourseBoardBean review){
+		double classAvg = bs.selectMyClassAvg(review);
+		return classAvg;
+	}
+	@PostMapping(value="/rest/insertClassReview")
+	public String insertClassReview(CourseBoardBean review) {
+		String bonum = bs.insertClassReview(review);
+		return bonum;
+	}
+	@PostMapping(value="/rest/selectClassReviewDetail")
+	public List<CourseBoardBean> selectClassReviewDetail(CourseBoardBean review){
+		List<CourseBoardBean> rList = bs.selectClassReviewDetail(review);
+		return rList;
+	}
+	@PostMapping(value="/rest/insertReviewReply")
+	public String insertReviewReply(CourseBoardBean review) {
+		String bonum = bs.insertReviewReply(review);
+		return bonum;
+	}
 	////////////////////////////////////////////////////
 	@PostMapping(value="/rest/boardWrite")
 	public String boardWrite(MultipartHttpServletRequest multi){

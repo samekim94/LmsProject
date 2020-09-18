@@ -410,7 +410,11 @@ public class BoardService {
 
 	public List<CourseBoardBean> selectClassNotice(CourseBoardBean CNB) {
 		List<CourseBoardBean> CNBList = bDao.selectClassNotice(CNB);
-		return CNBList;
+		if(CNBList !=null) {
+			return CNBList;			
+		}else {
+			return null;
+		}
 	}
 
 	public List<CourseBoardBean> selectClassQNA(CourseBoardBean QNA) {
@@ -429,11 +433,14 @@ public class BoardService {
 			return null;
 		} else {
 			List<CourseBoardBean> QNAList;
-			QNA.setCob_bonum("MQ");
 			QNA.setCob_id("dons"); // sessionID 넣어야
+			QNA.setCob_bonum("MQ");
 			String cont = QNA.getCob_cont();
+			System.out.println(cont);
 			cont.replace("\r\n", "<br/>");
 			QNA.setCob_cont(cont);
+			System.out.println();
+			System.out.println(cont);
 			if (bDao.insertMyClassQna(QNA)) {
 				System.out.println("success success success");
 				QNAList = bDao.selectClassQNA(QNA);
@@ -443,6 +450,147 @@ public class BoardService {
 				return null;
 			}
 		}
+	}
+
+	public List<CourseBoardBean> selectMyQnaDetail(CourseBoardBean QNA) {
+		List<CourseBoardBean> QNAList;
+		QNA.setCob_id("dons"); // session으로 바꿔줘야함
+		int cnt = 0; 
+		cnt = bDao.selectDetailViewReplyCount(QNA);
+		if(cnt != 0) {
+			QNAList = bDao.selectClassDetailViewReply(QNA);
+			System.out.println("댓글 있음");
+			return QNAList;
+		}else {
+			System.out.println("댓글 없음");
+			QNAList = bDao.selectClassDetailView(QNA);
+			return QNAList;
+		}
+	}
+
+	public String insertQnaReply(CourseBoardBean QR) {
+		String reply=QR.getCr_reply();
+		QR = bDao.selectReplyNumInfo(QR);
+		if(QR.getCob_idnum() != null) {
+			QR.setCob_id("dons"); //session ID
+			QR.setCr_reply(reply);
+			if(bDao.insertQnaReply(QR)) {
+				String semiBonum = QR.getCob_bonum();
+				String bonum = new Gson().toJson(semiBonum);
+				return bonum;
+			}else {
+				
+				return null;
+			}
+		}else {			
+			return null;
+		}
+	}
+
+	public List<CourseBoardBean> selectClassReview(CourseBoardBean review) {
+		List<CourseBoardBean> rList = bDao.selectClassReview(review);
+		System.out.println(rList);
+		if(rList != null) {
+			return rList;			
+		}else {
+			return null;
+		}
+	}
+
+	public double selectMyClassAvg(CourseBoardBean review) {
+		review.setCob_id("dons2"); //session 
+		int gpaCnt = bDao.selectGpaCount(review); // sessionID가 강좌평가한 cnt
+		int courseCnt = bDao.selectCourseCount(review) - 1; //idnum에 강좌가 몇개인지 
+		double classAvg;
+		System.out.println(review.getCob_idnum());
+		System.out.println("gpaCnt ="+gpaCnt);
+		System.out.println("courseCnt="+courseCnt);
+		if(gpaCnt >= courseCnt && gpaCnt !=0 && courseCnt!=0) {
+			classAvg = bDao.selectMyClassAvg(review);
+			return classAvg;
+		}else {
+			int admi = bDao.selectClassAdmi(review);
+			System.out.println("admi="+admi);
+			if(admi == 1) {
+				classAvg = -1;
+				return classAvg;
+			}else {		
+				classAvg = 0;
+				return classAvg;
+			}
+		}
+	}
+
+	public String insertClassReview(CourseBoardBean review) {
+		String bonum;
+		review.setCob_id("dons2");//session
+		review.setCob_num(0);
+		if(review.getCob_kind()==3) {
+			review.setCob_bonum("CR");
+		}
+		int reviewNum = bDao.selectClassReviewCnt(review); //강의후기 작성했는지 Chk
+		if(reviewNum !=0) {
+			bonum="이미 해당강의의 리뷰를 작성하셨습니다.";
+			return bonum;
+		}else {			
+			if(bDao.insertClassReviewBoard(review)) {
+				if(bDao.insertClassReviewGpa(review)) {
+					bonum = bDao.selectClassReviewBoardNum(review);
+					System.out.println("cob_bonum="+bonum);
+					if(bonum != null) {
+						//board, gpa insert success >> bonum select success
+						bonum = new Gson().toJson(bonum);
+						return bonum;
+					}else {
+						//bonum 출력 실패 
+						return null;
+					}
+				}else {
+					bonum = "rollback되야함 왜? board에만 insert 됨";
+					System.out.println("gpa insert fail need transaction!");
+					return bonum;
+				}
+			}else {
+				bonum="강의후기 작성에 실패했습니다.";
+				return bonum;
+			}			
+		}//제일 위 if의 else
+	}
+
+	public List<CourseBoardBean> selectClassReviewDetail(CourseBoardBean review) {
+		List<CourseBoardBean> rList;
+		review.setCob_id("dons"); // session으로 바꿔줘야함
+		int cnt = 0; 
+		cnt = bDao.selectDetailViewReplyCount(review);
+		if(cnt != 0) {
+			rList = bDao.selectClassDetailViewReply(review);
+			System.out.println("댓글 있음");
+			return rList;
+		}else {
+			System.out.println("댓글 없음");
+			rList = bDao.selectClassDetailView(review);
+			return rList;
+		}
+	}
+
+	public String insertReviewReply(CourseBoardBean review) {
+		String reply=review.getCr_reply();
+		review = bDao.selectReplyNumInfo(review);
+		if(review.getCob_idnum() != null) {
+			review.setCob_id("dons"); //session ID
+			review.setCr_reply(reply);
+			if(bDao.insertQnaReply(review)) {
+				String bonum =review.getCob_bonum();
+				bonum = new Gson().toJson(bonum);
+				return bonum;
+			}else {
+				
+				return null;
+			}
+		}else {			
+			return null;
+		}
+
 	}
 
 }// boardService END

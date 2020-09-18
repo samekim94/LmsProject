@@ -75,7 +75,6 @@
 	<select id ="selectSchedule" parameterType="schedule" resultType="schedule">
 	 	SELECT * FROM CLCOSC WHERE SC_YEAR=#{Sc_year} AND SC_MONTH=#{Sc_month} AND SC_DATE=#{Sc_date} AND SC_ID =#{Sc_id}
 	</select>
-	
 	<insert id='insertSchedule' parameterType='schedule'>
 		<selectKey keyProperty='sc_lv' resultType='Integer' order='BEFORE'>
 			SELECT cl_lv FROM cl WHERE cl_idnum = #{sc_idnum} 
